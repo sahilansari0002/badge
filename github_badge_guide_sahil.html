@@ -1,0 +1,354 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+.w{padding:1rem 0;font-family:'Inter',sans-serif;}
+.card{background:#0d1117;border-radius:14px;overflow:hidden;border:1px solid #21262d;max-width:680px;}
+.top-bar{height:3px;background:linear-gradient(90deg,#f9bfa7,#e1e4e4,#fae57e,#3fb950,#58a6ff,#bc8cff);}
+.header{padding:18px 20px 14px;border-bottom:1px solid #21262d;text-align:center;}
+.h-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#e6edf3;margin-bottom:4px;}
+.h-sub{font-size:12px;color:#8b949e;font-family:'Fira Code',monospace;}
+.progress-bar{height:4px;background:#21262d;margin:12px 0 0;}
+.progress-fill{height:100%;background:#3fb950;border-radius:2px;transition:width 0.4s;}
+.tab-row{display:flex;border-bottom:1px solid #21262d;overflow-x:auto;}
+.tab{padding:10px 14px;font-size:12px;color:#8b949e;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;font-weight:500;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;}
+.tab.active{color:#58a6ff;border-bottom-color:#58a6ff;}
+.tab:hover{color:#e6edf3;}
+.content{padding:16px 20px;}
+.page{display:none;}
+.page.active{display:block;}
+.badge-card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.badge-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.badge-icon{font-size:24px;width:40px;text-align:center;}
+.badge-info{flex:1;}
+.badge-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#e6edf3;}
+.badge-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.diff{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
+.easy{background:#1a3a1a;color:#3fb950;border:1px solid #2ea043;}
+.med{background:#2d1a00;color:#e3b341;border:1px solid #9e6a03;}
+.hard{background:#1a0808;color:#f85149;border:1px solid #da3633;}
+.solo{background:#0d2646;color:#58a6ff;border:1px solid #1f6feb;font-size:10px;padding:2px 7px;border-radius:20px;}
+.time{background:#1e1236;color:#bc8cff;border:1px solid #6e40c9;font-size:10px;padding:2px 7px;border-radius:20px;}
+.steps{display:flex;flex-direction:column;gap:6px;}
+.step{display:flex;gap:8px;align-items:flex-start;}
+.step-num{min-width:20px;height:20px;border-radius:50%;background:#21262d;color:#58a6ff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'Fira Code',monospace;}
+.step-text{font-size:12px;color:#8b949e;line-height:1.6;}
+.step-text strong{color:#e6edf3;}
+.cmd-block{background:#010409;border:1px solid #21262d;border-radius:7px;padding:10px 12px;font-family:'Fira Code',monospace;font-size:11px;color:#7ee787;margin:6px 0;position:relative;}
+.cmd-block .comment{color:#8b949e;}
+.copy-btn{position:absolute;top:6px;right:8px;background:#21262d;border:none;border-radius:4px;padding:2px 8px;font-size:10px;color:#8b949e;cursor:pointer;font-family:'Inter',sans-serif;}
+.copy-btn:hover{background:#30363d;color:#e6edf3;}
+.tip{background:#0d2646;border:1px solid #1f6feb22;border-radius:6px;padding:8px 12px;font-size:11px;color:#58a6ff;margin-top:8px;line-height:1.6;}
+.tip strong{color:#79c0ff;}
+.warn{background:#2d1a00;border:1px solid #9e6a0322;border-radius:6px;padding:8px 12px;font-size:11px;color:#e3b341;margin-top:8px;line-height:1.6;}
+.sec-title{font-size:11px;font-weight:600;color:#8b949e;letter-spacing:0.1em;text-transform:uppercase;margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:#21262d;}
+.tier-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.tier-card{background:#161b22;border:1px solid #21262d;border-radius:8px;padding:10px 12px;flex:1;min-width:100px;text-align:center;}
+.tier-name{font-size:12px;font-weight:600;color:#e6edf3;margin-bottom:4px;}
+.tier-val{font-size:11px;color:#8b949e;font-family:'Fira Code',monospace;}
+.done-check{width:18px;height:18px;border-radius:50%;border:1.5px solid #30363d;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:10px;transition:all 0.2s;}
+.done-check.checked{background:#238636;border-color:#2ea043;color:#fff;}
+.check-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:#8b949e;background:#161b22;border:1px solid #21262d;margin-bottom:6px;}
+.check-label{flex:1;}
+.check-label.done{text-decoration:line-through;color:#444;}
+.score-text{font-family:'Fira Code',monospace;font-size:12px;color:#3fb950;text-align:center;margin-top:10px;}
+</style>
+
+<div class="w">
+<div class="card">
+  <div class="top-bar"></div>
+  <div class="header">
+    <div class="h-title">🏆 GitHub Badge Hunter — @sahilansari0002</div>
+    <div class="h-sub">Step-by-step guide with copy-paste commands</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab(0)">⚡ Quick Wins</button>
+    <button class="tab" onclick="switchTab(1)">🦈 Pull Shark</button>
+    <button class="tab" onclick="switchTab(2)">🤪 YOLO</button>
+    <button class="tab" onclick="switchTab(3)">🧠 Galaxy Brain</button>
+    <button class="tab" onclick="switchTab(4)">👥 Pair Extra.</button>
+    <button class="tab" onclick="switchTab(5)">✅ Tracker</button>
+  </div>
+
+  <div class="content">
+
+    <!-- TAB 0: Quick Wins -->
+    <div class="page active" id="tab0">
+      <div class="badge-card">
+        <div class="badge-header">
+          <div class="badge-icon">🔫</div>
+          <div class="badge-info">
+            <div class="badge-name">Quickdraw</div>
+            <div class="badge-meta">
+              <span class="diff easy">Very Easy</span>
+              <span class="time">⏱ 2 mins</span>
+              <span class="solo">✅ Solo</span>
+            </div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Go to <strong>any repo you own</strong> (or create one)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Issues → New Issue</strong> → type any title → Submit</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Immediately</strong> click <strong>"Close issue"</strong> within 5 minutes</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Badge appears on your profile instantly! 🎉</div></div>
+        </div>
+        <div class="tip">💡 <strong>Fastest way:</strong> Go to <code>github.com/sahilansari0002/CODSOFT/issues/new</code> → submit → close immediately. Done in 60 seconds.</div>
+      </div>
+
+      <div class="badge-card">
+        <div class="badge-header">
+          <div class="badge-icon">💖</div>
+          <div class="badge-info">
+            <div class="badge-name">Public Sponsor</div>
+            <div class="badge-meta">
+              <span class="diff easy">Very Easy</span>
+              <span class="time">⏱ 5 mins</span>
+              <span class="solo">✅ Solo</span>
+            </div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Visit any popular dev's profile — try <strong>github.com/sindresorhus</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Click the <strong>❤️ Sponsor</strong> button on their profile</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Select the <strong>minimum tier</strong> (usually $1/month)</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Complete payment — badge appears instantly! Cancel anytime after.</div></div>
+        </div>
+        <div class="tip">💡 <strong>Tip:</strong> Badge stays permanently even if you cancel after 1 month.</div>
+      </div>
+    </div>
+
+    <!-- TAB 1: Pull Shark -->
+    <div class="page" id="tab1">
+      <div class="badge-card">
+        <div class="badge-header">
+          <div class="badge-icon">🦈</div>
+          <div class="badge-info">
+            <div class="badge-name">Pull Shark</div>
+            <div class="badge-meta">
+              <span class="diff med">Medium</span>
+              <span class="time">⏱ 15 mins</span>
+              <span class="solo">✅ Solo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-title">Run these commands in your terminal</div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Step 1: Clone any of your repos</span><br>
+          git clone https://github.com/sahilansari0002/CODSOFT.git<br>
+          cd CODSOFT
+        </div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Step 2: Create a new branch</span><br>
+          git checkout -b badge/pull-shark-1
+        </div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Step 3: Make any small change</span><br>
+          echo "# Pull Shark Badge" >> BADGE.md<br>
+          git add BADGE.md<br>
+          git commit -m "feat: add badge notes"
+        </div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Step 4: Push the branch</span><br>
+          git push origin badge/pull-shark-1
+        </div>
+
+        <div class="steps" style="margin-top:10px;">
+          <div class="step"><div class="step-num">5</div><div class="step-text">Go to GitHub → you'll see a prompt to <strong>"Compare & pull request"</strong> → click it</div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-text">Click <strong>"Create pull request"</strong> → then <strong>"Merge pull request"</strong></div></div>
+          <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Repeat steps 2–6</strong> one more time with branch name <code>badge/pull-shark-2</code></div></div>
+          <div class="step"><div class="step-num">8</div><div class="step-text">After 2 merged PRs → 🦈 <strong>Pull Shark badge unlocked!</strong></div></div>
+        </div>
+
+        <div class="sec-title">Tier targets</div>
+        <div class="tier-row">
+          <div class="tier-card"><div class="tier-name">Default</div><div class="tier-val">2 PRs</div></div>
+          <div class="tier-card"><div class="tier-name">🥉 Bronze</div><div class="tier-val">16 PRs</div></div>
+          <div class="tier-card"><div class="tier-name">🥈 Silver</div><div class="tier-val">128 PRs</div></div>
+          <div class="tier-card"><div class="tier-name">🥇 Gold</div><div class="tier-val">1024 PRs</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: YOLO -->
+    <div class="page" id="tab2">
+      <div class="badge-card">
+        <div class="badge-header">
+          <div class="badge-icon">🤪</div>
+          <div class="badge-info">
+            <div class="badge-name">YOLO</div>
+            <div class="badge-meta">
+              <span class="diff med">Medium</span>
+              <span class="time">⏱ 20 mins</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip" style="margin-bottom:10px;">⚠️ <strong>Needs:</strong> 2 GitHub accounts (yours + a friend or alt account)</div>
+
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Account B</strong> (friend/alt): Create a new repo on GitHub, go to <strong>Settings → Collaborators → Add people</strong> → add <code>sahilansari0002</code></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Account A (you)</strong>: Accept the invite from your email or notifications</div></div>
+        </div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Account A: Clone the repo, make a branch, push</span><br>
+          git clone https://github.com/ACCOUNT_B/REPO_NAME.git<br>
+          cd REPO_NAME<br>
+          git checkout -b yolo-branch<br>
+          echo "YOLO" >> yolo.md<br>
+          git add . && git commit -m "yolo commit"<br>
+          git push origin yolo-branch
+        </div>
+
+        <div class="steps">
+          <div class="step"><div class="step-num">3</div><div class="step-text">Go to GitHub → Open a <strong>Pull Request</strong> from <code>yolo-branch</code> → <code>main</code></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Merge it WITHOUT requesting any review</strong> — just click Merge directly</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text">🤪 <strong>YOLO badge unlocked</strong> for the account that merged!</div></div>
+        </div>
+
+        <div class="warn">⚠️ Make sure the repo has <strong>no branch protection rules</strong> that require reviews. Check: Settings → Branches → no rules on main.</div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Galaxy Brain -->
+    <div class="page" id="tab3">
+      <div class="badge-card">
+        <div class="badge-header">
+          <div class="badge-icon">🧠</div>
+          <div class="badge-info">
+            <div class="badge-name">Galaxy Brain</div>
+            <div class="badge-meta">
+              <span class="diff med">Medium</span>
+              <span class="time">⏱ Days–Weeks</span>
+              <span class="solo">✅ Solo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Visit <strong>github.com/orgs/community/discussions</strong></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Filter by <strong>"Unanswered"</strong> to find open questions</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Write a <strong>clear, detailed, helpful answer</strong> — don't post one-liners</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">When the author marks your reply as <strong>✅ Answered</strong> → that counts!</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text">Get <strong>2 accepted answers</strong> → badge unlocked!</div></div>
+        </div>
+
+        <div class="tip" style="margin-top:10px;">💡 <strong>Pro tip:</strong> Answer questions about topics you know well — Android, Flutter, Firebase, Java. Your expertise = faster accepted answers.</div>
+
+        <div class="sec-title">Tier targets</div>
+        <div class="tier-row">
+          <div class="tier-card"><div class="tier-name">Default</div><div class="tier-val">2 answers</div></div>
+          <div class="tier-card"><div class="tier-name">🥉 Bronze</div><div class="tier-val">8 answers</div></div>
+          <div class="tier-card"><div class="tier-name">🥈 Silver</div><div class="tier-val">16 answers</div></div>
+          <div class="tier-card"><div class="tier-name">🥇 Gold</div><div class="tier-val">32 answers</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Pair Extraordinaire -->
+    <div class="page" id="tab4">
+      <div class="badge-card">
+        <div class="badge-header">
+          <div class="badge-icon">👥</div>
+          <div class="badge-info">
+            <div class="badge-name">Pair Extraordinaire</div>
+            <div class="badge-meta">
+              <span class="diff hard">Hard</span>
+              <span class="time">⏱ 30 mins</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip" style="margin-bottom:10px;">⚠️ <strong>Needs:</strong> A friend's GitHub account (name + email)</div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Make a commit with co-author trailer</span><br>
+          git add .<br>
+          git commit -m "feat: add feature<br><br>Co-authored-by: FriendName &lt;friend@email.com&gt;"
+        </div>
+
+        <div class="warn">⚠️ Replace <code>FriendName</code> with your friend's exact GitHub display name and <code>friend@email.com</code> with their GitHub email. Must be on a <strong>separate blank line</strong> after the commit message.</div>
+
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyCmd(this)">copy</button>
+          <span class="comment"># Push and open a PR, then merge it</span><br>
+          git push origin your-branch-name
+        </div>
+
+        <div class="steps" style="margin-top:8px;">
+          <div class="step"><div class="step-num">✓</div><div class="step-text">After the PR is merged → <strong>both</strong> you and your friend get the badge! 🎉</div></div>
+        </div>
+
+        <div class="sec-title">Tier targets</div>
+        <div class="tier-row">
+          <div class="tier-card"><div class="tier-name">Default</div><div class="tier-val">1 co-author</div></div>
+          <div class="tier-card"><div class="tier-name">🥉 Bronze</div><div class="tier-val">10</div></div>
+          <div class="tier-card"><div class="tier-name">🥈 Silver</div><div class="tier-val">24</div></div>
+          <div class="tier-card"><div class="tier-name">🥇 Gold</div><div class="tier-val">48</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Tracker -->
+    <div class="page" id="tab5">
+      <div class="sec-title">Your badge checklist</div>
+      <div id="checklist">
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">🔫 Quickdraw — close issue within 5 mins</span><span class="diff easy">Very Easy</span></div>
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">💖 Public Sponsor — sponsor any dev ($1/mo)</span><span class="diff easy">Very Easy</span></div>
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">🦈 Pull Shark — merge 2 PRs (you already have this! 🎉)</span><span class="diff med">Medium</span></div>
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">🤪 YOLO — merge PR without review</span><span class="diff med">Medium</span></div>
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">🧠 Galaxy Brain — get 2 answers accepted</span><span class="diff med">Medium</span></div>
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">👥 Pair Extraordinaire — co-author a merged PR</span><span class="diff hard">Hard</span></div>
+        <div class="check-row"><div class="done-check" onclick="toggleCheck(this)"></div><span class="check-label">⭐ Starstruck — get 16 stars on a repo</span><span class="diff hard">Hard</span></div>
+      </div>
+      <div class="score-text" id="score-text">0 / 7 badges earned</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const tabs = document.querySelectorAll('.tab');
+const pages = document.querySelectorAll('.page');
+function switchTab(i){
+  tabs.forEach((t,j)=>{t.classList.toggle('active',i===j);});
+  pages.forEach((p,j)=>{p.classList.toggle('active',i===j);});
+}
+function copyCmd(btn){
+  const block = btn.parentElement;
+  const text = block.innerText.replace('copy','').replace(/^#.*\n/gm,'').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='✓';
+    setTimeout(()=>btn.textContent='copy',2000);
+  });
+}
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '';
+  const label = el.nextElementSibling;
+  label.classList.toggle('done', el.classList.contains('checked'));
+  updateScore();
+}
+function updateScore(){
+  const total = document.querySelectorAll('.done-check').length;
+  const done = document.querySelectorAll('.done-check.checked').length;
+  const pct = Math.round(done/total*100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('score-text').textContent = done+' / '+total+' badges earned';
+}
+</script>
